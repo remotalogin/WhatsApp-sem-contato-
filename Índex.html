@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envio para WhatsApp</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="tel"], textarea, select {
+            font-size: 1rem;
+            padding: 12px;
+            width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        button {
+            font-size: 1.2rem;
+            padding: 12px;
+            width: 100%;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1ebe5a;
+        }
+
+        .status {
+            margin-top: 20px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Enviar Mensagem para WhatsApp</h1>
+
+    <!-- Selecionar DDD -->
+    <select id="dddSelect">
+        <option value="51" selected>Área 51 - Porto Alegre/RS</option>
+        <option value="11">Área 11 - São Paulo/SP</option>
+        <option value="21">Área 21 - Rio de Janeiro/RJ</option>
+        <option value="31">Área 31 - Belo Horizonte/MG</option>
+        <option value="41">Área 41 - Curitiba/PR</option>
+        <option value="61">Área 61 - Brasília/DF</option>
+        <option value="62">Área 62 - Goiás/GO</option>
+        <option value="63">Área 63 - Palmas/TO</option>
+        <option value="64">Área 64 - Rio Verde/GO</option>
+        <option value="65">Área 65 - Cuiabá/MT</option>
+        <option value="66">Área 66 - Rondonópolis/MT</option>
+        <option value="67">Área 67 - Campo Grande/MS</option>
+        <option value="68">Área 68 - Rio Branco/AC</option>
+        <option value="69">Área 69 - Porto Velho/RO</option>
+        <option value="71">Área 71 - Salvador/BA</option>
+        <option value="73">Área 73 - Ilhéus/BA</option>
+        <option value="74">Área 74 - Juazeiro/BA</option>
+        <option value="75">Área 75 - Feira de Santana/BA</option>
+        <option value="77">Área 77 - Vitória da Conquista/BA</option>
+        <option value="79">Área 79 - Aracaju/SE</option>
+        <option value="81">Área 81 - Recife/PE</option>
+        <option value="82">Área 82 - Maceió/AL</option>
+        <option value="83">Área 83 - João Pessoa/PB</option>
+        <option value="84">Área 84 - Natal/RN</option>
+        <option value="85">Área 85 - Fortaleza/CE</option>
+        <option value="86">Área 86 - Teresina/PI</option>
+        <option value="87">Área 87 - Petrolina/PE</option>
+        <option value="88">Área 88 - Juazeiro do Norte/CE</option>
+        <option value="89">Área 89 - Picos/PI</option>
+        <option value="91">Área 91 - Belém/PA</option>
+        <option value="92">Área 92 - Manaus/AM</option>
+        <option value="93">Área 93 - Santarém/PA</option>
+        <option value="94">Área 94 - Marabá/PA</option>
+        <option value="95">Área 95 - Boa Vista/RR</option>
+        <option value="96">Área 96 - Macapá/AP</option>
+        <option value="97">Área 97 - Coari/AM</option>
+        <option value="98">Área 98 - São Luís/MA</option>
+        <option value="99">Área 99 - Imperatriz/MA</option>
+        <!-- Adicione mais opções de DDD conforme necessário -->
+    </select>
+
+    <!-- Input para número de telefone -->
+    <input id="phoneInput" type="tel" placeholder="Digite o restante do número" oninput="checkPhoneAndRedirect()" />
+
+    <!-- Campo de mensagem opcional -->
+    <textarea id="messageInput" placeholder="Digite sua mensagem (opcional)"></textarea>
+
+    <!-- Botão para falar o número -->
+    <button onclick="startSpeechRecognition()">Falar Número</button>
+
+    <!-- Exibição de status -->
+    <p id="status" class="status"></p>
+</div>
+
+<script>
+    // Função para iniciar o reconhecimento de voz
+    function startSpeechRecognition() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'pt-BR';  // Define o idioma para português
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.start();
+
+        document.getElementById("status").innerText = "Ouvindo...";
+
+        recognition.onresult = (event) => {
+            const spokenText = event.results[0][0].transcript;
+            const numberOnly = spokenText.replace(/\D/g, ''); // Remove tudo que não for número
+
+            if (numberOnly) {
+                document.getElementById('phoneInput').value = numberOnly;
+                document.getElementById("status").innerText = `Número reconhecido: ${numberOnly}`;
+                checkPhoneAndRedirect();
+            } else {
+                document.getElementById("status").innerText = "Por favor, fale apenas números.";
+            }
+        };
+
+        recognition.onerror = (event) => {
+            document.getElementById("status").innerText = "Erro: " + event.error;
+        };
+
+        recognition.onspeechend = () => {
+            recognition.stop();
+        };
+    }
+
+    // Função para verificar o número e redirecionar
+    function checkPhoneAndRedirect() {
+        const ddd = document.getElementById('dddSelect').value;
+        const phone = document.getElementById('phoneInput').value;
+        const message = document.getElementById('messageInput').value;
+        if (phone.length >= 8) { // Verifica se o número tem pelo menos 8 dígitos
+            redirectToWhatsApp(ddd, phone, message);
+        }
+    }
+
+    // Função para redirecionar para o WhatsApp
+    function redirectToWhatsApp(ddd, phone, message) {
+        const formattedPhone = ddd + phone.replace(/\D/g, ''); // Junta o DDD com o número de telefone
+        let whatsappUrl = `https://wa.me/55${formattedPhone}`;
+        if (message) {
+            whatsappUrl += `?text=${encodeURIComponent(message)}`;
+        }
+        window.location.href = whatsappUrl; // Redireciona para o WhatsApp
+    }
+</script>
+
+</body>
+</html>
